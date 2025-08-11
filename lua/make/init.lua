@@ -1,12 +1,12 @@
 local plugin = require("make.plugin")
 
 vim.fn.sign_define("MakeTarget", {
-	text = "󰐊",
+	text = "󱤵",
 	texthl = "DiagnosticSignHint",
 })
 
 vim.fn.sign_define("MakeTargetHighlight", {
-	text = "󰐊",
+	text = "󱤵",
 	texthl = "DiagnosticSignWarn",
 })
 
