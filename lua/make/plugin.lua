@@ -76,6 +76,11 @@ local M = {}
 
 function M.setup() end
 
+function M.run_nearest()
+	local target, _ = find_nearest_buffer_target()
+	M.run_target(target)
+end
+
 function M.run_selected(opts)
 	M.run_target(opts.fargs[1])
 end

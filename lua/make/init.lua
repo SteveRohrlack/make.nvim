@@ -5,4 +5,6 @@ vim.api.nvim_create_user_command("Make", plugin.run_selected, {
 	complete = plugin.find_targets,
 })
 
+vim.api.nvim_create_user_command("MakeNearest", plugin.run_nearest, {})
+
 return plugin
