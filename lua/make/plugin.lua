@@ -42,10 +42,6 @@ local function find_nearest_buffer_target(targets)
 		return
 	end
 
-	if not targets then
-		targets = find_buffer_targets()
-	end
-
 	local cursor = vim.api.nvim_win_get_cursor(0)
 	local current_line, _ = unpack(cursor)
 
@@ -77,7 +73,13 @@ local M = {}
 function M.setup() end
 
 function M.run_nearest()
-	local target, _ = find_nearest_buffer_target()
+	local targets = find_buffer_targets()
+	local target, _ = find_nearest_buffer_target(targets)
+	if not target then
+		vim.notify("no target found 🤷", vim.log.levels.INFO, {
+			title = "make",
+		})
+	end
 	M.run_target(target)
 end
 
