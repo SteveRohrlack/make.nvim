@@ -76,8 +76,16 @@ local M = {}
 
 function M.setup() end
 
-function M.run_command(opts)
-	local cmd = "make " .. opts.fargs[1]
+function M.run_selected(opts)
+	M.run_target(opts.fargs[1])
+end
+
+function M.run_target(target)
+	if not target then
+		return
+	end
+
+	local cmd = "make " .. target
 	local didErr = false
 
 	vim.fn.jobstart(cmd, {
@@ -106,8 +114,12 @@ function M.find_targets(searchTerm)
 	local searchResults = {}
 	local file_path = Path:new("Makefile")
 
-	local iterate = function(line)
-		local target = line:match("^([%w-_]+):")
+	if not file_path:exists() then
+		return
+	end
+
+	local iterator = function(line)
+		local target = parse_make_target(line)
 		if not target then
 			return
 		end
@@ -124,7 +136,7 @@ function M.find_targets(searchTerm)
 	end
 
 	for line in file_path:iter() do
-		iterate(line)
+		iterator(line)
 	end
 
 	return searchResults
