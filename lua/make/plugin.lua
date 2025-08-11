@@ -156,6 +156,10 @@ function M.decorate_makefile(opts)
 	local _, nearest_target_line = find_nearest_buffer_target(targets)
 	local bufnr = vim.api.nvim_get_current_buf()
 
+	vim.fn.sign_unplace("MakeTarget", {
+		buffer = bufnr,
+	})
+
 	for line_nr, _ in pairs(targets) do
 		local name = "MakeTarget"
 		if line_nr == nearest_target_line then

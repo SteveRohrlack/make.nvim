@@ -27,7 +27,7 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 	callback = plugin.decorate_makefile,
 })
 
-vim.api.nvim_create_autocmd("TextChanged", {
+vim.api.nvim_create_autocmd("BufWritePost", {
 	pattern = "Makefile",
 	callback = plugin.decorate_makefile,
 })
