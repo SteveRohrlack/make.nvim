@@ -37,6 +37,7 @@ local function find_buffer_targets()
 	return targets
 end
 
+-- TODO: take start and end of target into account instead of just the target name for more accuracy
 local function find_nearest_buffer_target(targets)
 	if not is_makefile() then
 		return
