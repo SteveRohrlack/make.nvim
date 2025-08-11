@@ -147,4 +147,24 @@ function M.find_targets(searchTerm)
 	return searchResults
 end
 
+function M.decorate_makefile(opts)
+	if not opts.file or not is_makefile() then
+		return
+	end
+
+	local targets = find_buffer_targets()
+	local _, nearest_target_line = find_nearest_buffer_target(targets)
+	local bufnr = vim.api.nvim_get_current_buf()
+
+	for line_nr, _ in pairs(targets) do
+		local name = "MakeTarget"
+		if line_nr == nearest_target_line then
+			name = "MakeTargetHighlight"
+		end
+		vim.fn.sign_place(line_nr, "MakeTarget", name, bufnr, {
+			lnum = line_nr,
+		})
+	end
+end
+
 return M
