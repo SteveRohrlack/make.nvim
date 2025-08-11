@@ -1,7 +1,75 @@
 local Path = require("plenary.path")
 
-local function isEOF(any)
+local MAX_INT = 2 ^ 53 - 1
+
+local function is_eof(any)
 	return #any == 1 and any[1] == ""
+end
+
+local function is_makefile()
+	return vim.bo.filetype == "make"
+end
+
+local function parse_make_target(any)
+	return any:match("^([%w-_]+):")
+end
+
+local function find_buffer_targets()
+	local targets = {}
+
+	local bufnr = vim.api.nvim_get_current_buf()
+	local last_line = vim.api.nvim_buf_line_count(bufnr)
+	local file_lines = vim.api.nvim_buf_get_lines(bufnr, 0, last_line, true)
+
+	local iterate = function(line_nr, line)
+		local target = parse_make_target(line)
+		if not target then
+			return
+		end
+
+		targets[line_nr] = target
+	end
+
+	for i, line in ipairs(file_lines) do
+		iterate(i, line)
+	end
+
+	return targets
+end
+
+local function find_nearest_buffer_target(targets)
+	if not is_makefile() then
+		return
+	end
+
+	if not targets then
+		targets = find_buffer_targets()
+	end
+
+	local cursor = vim.api.nvim_win_get_cursor(0)
+	local current_line, _ = unpack(cursor)
+
+	local closest_to_cursor = MAX_INT
+	local nearest_target = {}
+	local target_line = 0
+
+	local function iterate(line_nr, target)
+		local diff = math.abs(current_line - line_nr)
+		if diff < closest_to_cursor then
+			closest_to_cursor = diff
+			nearest_target = target
+			target_line = line_nr
+		end
+		if diff == 0 then
+			return
+		end
+	end
+
+	for line_nr, target in pairs(targets) do
+		iterate(line_nr, target)
+	end
+
+	return nearest_target, target_line
 end
 
 local M = {}
@@ -15,7 +83,7 @@ function M.run_command(opts)
 	vim.fn.jobstart(cmd, {
 		stderr_buffered = true,
 		on_stderr = function(_, data)
-			if isEOF(data) then
+			if is_eof(data) then
 				return
 			end
 			didErr = true
