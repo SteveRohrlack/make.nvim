@@ -22,6 +22,8 @@ or open a Makefile and place the cursor somewhere near a target:
 
 ## install
 
+you'll need treesitter and the "make" parser for this plugin to work
+
 ### lazy
 
 ```
