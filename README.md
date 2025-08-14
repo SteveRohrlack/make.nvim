@@ -26,13 +26,25 @@ you'll need treesitter and the "make" parser for this plugin to work
 
 ### lazy
 
+```lua
+{
+  "nvim-treesitter/nvim-treesitter",
+  opts = {
+    ensure_installed = {
+      "make",
+    },
+  },
+}
 ```
-return {
+
+```lua
+{
   "steverohrlack/make.nvim",
   cmd = {
     "Make",
     "MakeNearest",
   },
+  ft = "make",
   dependencies = {
     "plenary.nvim",
   },
